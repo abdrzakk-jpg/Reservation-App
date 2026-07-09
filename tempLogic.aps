@@ -1,0 +1,15 @@
+
+
+
+// scheduler logic
+
+closer_appt = null
+
+loop (every 10 min's) {
+
+    closer_appt = search_in_db(Appt.appointments).filter( close && send == False).order.first()
+
+    if( closer_appt.appt_at )
+
+    
+}
