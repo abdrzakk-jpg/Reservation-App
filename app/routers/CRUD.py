@@ -5,6 +5,7 @@ from fastapi import Depends, status, APIRouter, HTTPException
 from app.src.utils import get_db
 from app.schemas.schemes import *
 from rich import print
+from datetime import datetime, timezone, timedelta
 
 
 router = APIRouter(
@@ -14,10 +15,24 @@ router = APIRouter(
 
 
 #* get appts
-@router.get("/", status_code=status.HTTP_200_OK, response_model=List[ApptResScheme])
+# @router.get("/", status_code=status.HTTP_200_OK, response_model=List[ApptResScheme])
+@router.get("/", status_code=status.HTTP_200_OK, response_model=ApptResScheme)
 def get_appts(db: Session = Depends(get_db)):
 
-    appts = db.query(Appt).all()
+    appts = db.query(Appt).order_by(Appt.appt_at.asc()).first()
+    
+
+    # reminde_date = datetime.strptime(str(appts.appt_at), "%Y-%m-%d %H:%M:%S") + timedelta(days=1)
+    now = datetime.now(timezone.utc)
+
+    reminde_date = now + timedelta(days=1)
+
+    print(f"[yellow bold]We Are in: {now.strftime("%Y-%m-%d %H:%M:%S")}[/yellow bold]")
+    
+    print(f"[yellow bold]Reminde in: {reminde_date.replace(hour=10, minute=0).strftime("%Y-%m-%d %H:%M:%S")}[/yellow bold]")
+
+
+
     
     return appts
 
@@ -54,7 +69,7 @@ async def update_appt( id: int, selectd_appt: UpdateApptScheme, db: Session = De
     if(current_appt.phone_number != selectd_appt.phone_number):
 
 
-        # recheck if given number is used
+        # recheck if given number is used   
         check_query = db.query( Appt ).filter(Appt.phone_number == selectd_appt.phone_number)
         current_number = check_query.first()
 
