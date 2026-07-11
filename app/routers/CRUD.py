@@ -49,8 +49,10 @@ async def add_appt( appt: ApptScheme, db: Session = Depends(get_db) ):
         logger.success(f"Appointment registred with ID: #{created_appt.id}")
         return created_appt
 
+    except HTTPException:
+        raise
     except Exception as err:        
-        logger.exception(f"[#{id}]Faild to Add Appointment, rollback...")
+        logger.exception(f"Faild to Registe Appointment, rollback...")
         db.rollback()
         logger.exception(f"Unexcpected Error")
         raise HTTPException(
@@ -104,11 +106,11 @@ async def update_appt( id: int, selectd_appt: UpdateApptScheme, db: Session = De
         if now >= (current_appt.reminde_date).strftime("%Y-%m-%dT%H:%M:%S"):
                 current_appt.sent = True
 
-        # update
-        appt_query.update(
-            {**selectd_appt.model_dump()}, # it needs {} to work :)
-            synchronize_session=False
-        )
+        # we dont need overload `update` (we updated values above already)
+        # appt_query.update(
+        #     {**selectd_appt.model_dump()}, # it needs {} to work :)
+        #     synchronize_session=False
+        # )
         
         db.commit()
         db.refresh(current_appt)
@@ -116,6 +118,8 @@ async def update_appt( id: int, selectd_appt: UpdateApptScheme, db: Session = De
         logger.info(f"[#{current_appt.id}]Appointment Updated")
         return current_appt
 
+    except HTTPException:
+        raise
     except Exception as err:
         logger.exception(f"[#{id}]Faild to Update, rollback...")
         db.rollback()
@@ -143,6 +147,8 @@ def delete_appts(id:int, db: Session = Depends(get_db)):
         db.commit()
         logger.info(f"[#{current_appt.id}]Appointment Deleted")
         
+    except HTTPException:
+        raise
     except Exception as err:
         logger.exception(f"[#{id}]Faild to Delete, rollback...")
         db.rollback()
@@ -151,30 +157,3 @@ def delete_appts(id:int, db: Session = Depends(get_db)):
             detail = str(err)
         )
 
-
-
-
-#  =======================|TEST-AREA|======================= #
-
-# @router.get("/tst", status_code=status.HTTP_200_OK, response_model=ApptResScheme | dict)
-def tst(db: Session = Depends(get_db)):
-
-    appts: Appt = db.query(Appt).order_by(Appt.reminde_date.asc()).first()
-
-
-    now = (datetime.now(timezone.utc)).strftime("%Y-%m-%dT%H:%M:%S")
-    send = False
-    if now >= (appts.reminde_date).strftime("%Y-%m-%dT%H:%M:%S"):
-        send = True
-
-    print(now)
-    print((appts.reminde_date).strftime("%Y-%m-%dT%H:%M:%S"))
-
-
-    
-    return {
-        "Closr Appointment": appts.appt_at,
-        "Reminde At": appts.reminde_date,
-        "Now": now,
-        "Send": send
-        }
