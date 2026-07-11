@@ -1,5 +1,5 @@
 
-from datetime import datetime
+from datetime import datetime, timezone
 from pydantic import BaseModel, Field
 
 
@@ -17,6 +17,7 @@ class ApptScheme(BaseModel):
 
 
 class ApptResScheme(ApptScheme):
+    reminde_date: datetime = datetime.now(timezone.utc)
     id: int
     sent: bool = False
 

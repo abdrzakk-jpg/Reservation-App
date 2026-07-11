@@ -14,31 +14,17 @@ router = APIRouter(
 
 
 
-#* get appts
-# @router.get("/", status_code=status.HTTP_200_OK, response_model=List[ApptResScheme])
-@router.get("/", status_code=status.HTTP_200_OK, response_model=ApptResScheme)
+#* get appointment
+@router.get("/", status_code=status.HTTP_200_OK, response_model=List[ApptResScheme])
+# @router.get("/", status_code=status.HTTP_200_OK, response_model=ApptResScheme)
 def get_appts(db: Session = Depends(get_db)):
 
-    appts = db.query(Appt).order_by(Appt.appt_at.asc()).first()
-    
-
-    # reminde_date = datetime.strptime(str(appts.appt_at), "%Y-%m-%d %H:%M:%S") + timedelta(days=1)
-    now = datetime.now(timezone.utc)
-
-    reminde_date = now + timedelta(days=1)
-
-    print(f"[yellow bold]We Are in: {now.strftime("%Y-%m-%d %H:%M:%S")}[/yellow bold]")
-    
-    print(f"[yellow bold]Reminde in: {reminde_date.replace(hour=10, minute=0).strftime("%Y-%m-%d %H:%M:%S")}[/yellow bold]")
-
-
-
-    
+    appts = db.query(Appt).all()
     return appts
 
 
-#* add appt
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=ApptScheme)
+#* add appointment
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=ApptResScheme)
 async def add_appt( appt: ApptScheme, db: Session = Depends(get_db) ):
     if db.query(Appt).filter( Appt.phone_number == appt.phone_number ).first():
 
@@ -47,14 +33,21 @@ async def add_appt( appt: ApptScheme, db: Session = Depends(get_db) ):
             detail="Phone Number Is Used"
         )
 
-    created_appt = Appt(**appt.model_dump())
+    appt_dict = appt.model_dump().copy() # create editable copy
+    # calc reminde date ( a day before )
+    reminde_date = (appt.appt_at - timedelta(days=1)).replace(hour=10, minute=0)
+    appt_dict["reminde_date"] = reminde_date
+
+    print(appt_dict)
+    created_appt = Appt(**appt_dict)
 
     db.add(created_appt)
     db.commit()
     db.refresh(created_appt)
 
     return created_appt
-    
+
+#* update appointment
 @router.put("/{id}", status_code=status.HTTP_202_ACCEPTED, response_model=ApptResScheme)
 async def update_appt( id: int, selectd_appt: UpdateApptScheme, db: Session = Depends(get_db)  ):
 
@@ -93,7 +86,7 @@ async def update_appt( id: int, selectd_appt: UpdateApptScheme, db: Session = De
 
     
 
-    
+#* delete appointment
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_appts(id:int ,    db: Session = Depends(get_db)):
     appt_query = db.query(Appt).filter( Appt.id == id )
@@ -107,3 +100,31 @@ def delete_appts(id:int ,    db: Session = Depends(get_db)):
 
     db.delete(current_appt)
     db.commit()
+
+
+
+
+#  =======================|TEST-AREA|======================= #
+
+@router.get("/tst", status_code=status.HTTP_200_OK, response_model=ApptResScheme | dict)
+def tst(db: Session = Depends(get_db)):
+
+    appts: Appt = db.query(Appt).order_by(Appt.reminde_date.asc()).first()
+
+
+    now = (datetime.now(timezone.utc)).strftime("%Y-%m-%dT%H:%M:%S")
+    send = False
+    if now >= (appts.reminde_date).strftime("%Y-%m-%dT%H:%M:%S"):
+        send = True
+
+    print(now)
+    print((appts.reminde_date).strftime("%Y-%m-%dT%H:%M:%S"))
+
+
+    
+    return {
+        "Closr Appointment": appts.appt_at,
+        "Reminde At": appts.reminde_date,
+        "Now": now,
+        "Send": send
+        }

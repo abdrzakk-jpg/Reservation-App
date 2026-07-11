@@ -1,3 +1,4 @@
+from app.services.logger import logger
 from fastapi import FastAPI
 from scalar_fastapi import get_scalar_api_reference  # UI enhancement
 
@@ -33,3 +34,8 @@ def root():
 
 
 app.include_router(CRUD.router)
+
+# import & start scheduler
+from app.services.setup_scheduler import setup_scheduler
+if setup_scheduler() :
+    logger.info("Scheduler Started !")

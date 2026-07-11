@@ -16,7 +16,7 @@ class Appt(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     username = Column(String, unique=False, nullable=False)
     phone_number = Column(String,unique=True, nullable=False)
-    appt_at = Column(DateTime(timezone=True), nullable=False)    
-    reminde_date = Column(DateTime)
+    appt_at = Column(DateTime(timezone=True), nullable=False)
+    reminde_date = Column(DateTime(timezone=True))
     sent = Column(Boolean, server_default=false(), nullable=False)# `server_default = false()` to avoid put `NULL` val in column that refuse Null values
     
