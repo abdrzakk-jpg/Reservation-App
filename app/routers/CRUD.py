@@ -40,16 +40,17 @@ async def add_appt( appt: ApptScheme, db: Session = Depends(get_db) ):
         reminde_date = (appt.appt_at - timedelta(days=1)).replace(hour=10, minute=0)
         appt_dict["reminde_date"] = reminde_date
 
-        print(appt_dict)
         created_appt = Appt(**appt_dict)
 
         db.add(created_appt)
         db.commit()
         db.refresh(created_appt)
 
+        logger.success(f"Appointment registred with ID: #{created_appt.id}")
         return created_appt
 
-    except Exception as err:
+    except Exception as err:        
+        logger.exception(f"[#{id}]Faild to Add Appointment, rollback...")
         db.rollback()
         logger.exception(f"Unexcpected Error")
         raise HTTPException(
@@ -92,8 +93,8 @@ async def update_appt( id: int, selectd_appt: UpdateApptScheme, db: Session = De
         if(current_appt.appt_at != selectd_appt.appt_at):
 
             # pyrefly: ignore [bad-assignment]
-            current_appt.appt_at = selectd_appt.appt_at
-            current_appt.reminde_date = (current_appt.appt_at - timedelta(days=1)).replace(hour=10, minute=0)
+            current_appt.appt_at = selectd_appt.appt_at # update appointment_date
+            current_appt.reminde_date = (current_appt.appt_at - timedelta(days=1)).replace(hour=10, minute=0) # update reminde_date
 
             # if today is not reminde date (bcoz appointment date changed) change `sent` state
             if now <= (current_appt.reminde_date).strftime("%Y-%m-%dT%H:%M:%S"):
@@ -112,12 +113,12 @@ async def update_appt( id: int, selectd_appt: UpdateApptScheme, db: Session = De
         db.commit()
         db.refresh(current_appt)
 
-
+        logger.info(f"[#{current_appt.id}]Appointment Updated")
         return current_appt
 
     except Exception as err:
+        logger.exception(f"[#{id}]Faild to Update, rollback...")
         db.rollback()
-        logger.exception(f"Unexcpected Error")
         raise HTTPException(
             status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail = str(err)
@@ -127,7 +128,7 @@ async def update_appt( id: int, selectd_appt: UpdateApptScheme, db: Session = De
 
 #* delete appointment
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_appts(id:int ,    db: Session = Depends(get_db)):
+def delete_appts(id:int, db: Session = Depends(get_db)):
     try:
         appt_query = db.query(Appt).filter( Appt.id == id )
         current_appt = appt_query.first()
@@ -140,10 +141,11 @@ def delete_appts(id:int ,    db: Session = Depends(get_db)):
         
         db.delete(current_appt)
         db.commit()
+        logger.info(f"[#{current_appt.id}]Appointment Deleted")
         
     except Exception as err:
+        logger.exception(f"[#{id}]Faild to Delete, rollback...")
         db.rollback()
-        logger.exception(f"Unexcpected Error")
         raise HTTPException(
             status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail = str(err)
