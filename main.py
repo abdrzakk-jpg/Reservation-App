@@ -36,6 +36,6 @@ def root():
 app.include_router(CRUD.router)
 
 # import & start scheduler
+logger.info("Starting Scheduler...")
 from app.services.setup_scheduler import setup_scheduler
-if setup_scheduler() :
-    logger.info("Scheduler Started !")
+setup_scheduler()
