@@ -1,5 +1,6 @@
 from app.services.logger import logger
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from scalar_fastapi import get_scalar_api_reference  # UI enhancement
 
 from app.db_connector import engine
@@ -13,6 +14,19 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(
     docs_url=None,  # تعطيل Swagger
     redoc_url=None,  # تعطيل ReDoc
+)
+origins = [
+    "http://localhost:5173/",
+    "http://localhost:5174/",
+    "http://localhost:5175/",
+    "http://localhost:5176/",
+]
+app.add_middleware( 
+    CORSMiddleware,
+    allow_origins=["*"], # ["*"] just in dev
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -30,12 +44,12 @@ async def scalar_docs():
 
 @app.get("/")  # "/" => path, .get => method
 def root():
-    return {"msg": "hello api !!!"}
+    return {"msg": "alive"}
 
 
-app.include_router(CRUD.router)
 
 # import & start scheduler
-logger.info("Starting Scheduler...")
 from app.services.setup_scheduler import setup_scheduler
 setup_scheduler()
+
+app.include_router(CRUD.router)

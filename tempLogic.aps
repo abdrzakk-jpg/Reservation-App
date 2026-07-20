@@ -1,8 +1,0 @@
-
-
-
-// scheduler logic
-
-function check( db ) {
-    next_appt = db.query(Appt).order
-}   

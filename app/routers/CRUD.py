@@ -1,13 +1,15 @@
+from requests.exceptions import ConnectionError
+from app.src.utils import generate_sms_msg
+from app.services.check_logic import send_sms
 from app.services.logger import logger
 from typing import List
 from sqlalchemy.orm import Session
 from app.models import Appt
 from fastapi import Depends, status, APIRouter, HTTPException
-from app.src.utils import get_db
+from app.src.utils import get_db, now
 from app.schemas.schemes import *
-from rich import print
-from datetime import datetime, timezone, timedelta
-
+from datetime import timedelta
+from app.src.dotenv_loader import ip
 
 router = APIRouter(
     prefix='/appointments', 
@@ -21,12 +23,13 @@ router = APIRouter(
 def get_appts(db: Session = Depends(get_db)):
 
     appts = db.query(Appt).all()
-    return appts
+    return appts    
 
 
 #* add appointment
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=ApptResScheme)
 async def add_appt( appt: ApptScheme, db: Session = Depends(get_db) ):
+    logger.info(f"Requested Data: {appt}")
     try:
         if db.query(Appt).filter( Appt.phone_number == appt.phone_number ).first():
 
@@ -39,9 +42,34 @@ async def add_appt( appt: ApptScheme, db: Session = Depends(get_db) ):
         # calc reminde date ( a day before )
         reminde_date = (appt.appt_at - timedelta(days=1)).replace(hour=10, minute=0)
         appt_dict["reminde_date"] = reminde_date
+        
 
-        created_appt = Appt(**appt_dict)
 
+        created_appt: Appt = Appt(**appt_dict)
+
+        # if today is not reminde date (bcoz appointment date changed) change `sent` state
+        if now <= (created_appt.reminde_date).strftime("%Y-%m-%dT%H:%M:%S"):
+                
+                
+                created_appt.sent = False # pyrefly: ignore [bad-assignment]
+        # if `reminde_date` is Gone
+        if now >= (created_appt.reminde_date).strftime("%Y-%m-%dT%H:%M:%S"):
+            msg = generate_sms_msg(
+                            
+                            username=created_appt.username,# pyrefly: ignore [bad-argument-type]
+                            date=created_appt.appt_at # pyrefly: ignore [bad-argument-type]
+                        )
+            sms_send_response = send_sms(created_appt.phone_number, msg, ip)
+            if sms_send_response == -1: 
+                logger.exception(f"Faild to Send SMS, rollback...")
+                raise HTTPException(
+                    status_code = status.HTTP_424_FAILED_DEPENDENCY,
+                    detail = "SMS-Gateaway Unreachable"
+                )
+
+            created_appt.sent = True # pyrefly: ignore [bad-assignment]
+
+        # add appointment
         db.add(created_appt)
         db.commit()
         db.refresh(created_appt)
@@ -49,8 +77,10 @@ async def add_appt( appt: ApptScheme, db: Session = Depends(get_db) ):
         logger.success(f"Appointment registred with ID: #{created_appt.id}")
         return created_appt
 
+
     except HTTPException:
         raise
+
     except Exception as err:        
         logger.exception(f"Faild to Registe Appointment, rollback...")
         db.rollback()
@@ -87,12 +117,17 @@ async def update_appt( id: int, selectd_appt: UpdateApptScheme, db: Session = De
                 detail="Number Is Used"
             )   
 
-            current_appt.phone_number = selectd_appt.phone_number
-
-        now = (datetime.now(timezone.utc)).strftime("%Y-%m-%dT%H:%M:%S") 
+            current_appt.phone_number = selectd_appt.phone_number # pyrefly: ignore [bad-assignment]
 
         # if appointment date is changed/updated
-        if(current_appt.appt_at != selectd_appt.appt_at):
+        if (current_appt.appt_at).strftime("%Y-%m-%dT%H:%M:%S") != (selectd_appt.appt_at).strftime("%Y-%m-%dT%H:%M:%S"):
+
+            if (current_appt.appt_at).strftime("%Y-%m-%dT%H:%M:%S") > (selectd_appt.appt_at).strftime("%Y-%m-%dT%H:%M:%S"): # prevent select gone date
+                raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Can't Choose Date In The Past"
+                    
+            )   
 
             # pyrefly: ignore [bad-assignment]
             current_appt.appt_at = selectd_appt.appt_at # update appointment_date
@@ -100,17 +135,17 @@ async def update_appt( id: int, selectd_appt: UpdateApptScheme, db: Session = De
 
             # if today is not reminde date (bcoz appointment date changed) change `sent` state
             if now <= (current_appt.reminde_date).strftime("%Y-%m-%dT%H:%M:%S"):
-                current_appt.sent = False
+                current_appt.sent = False # pyrefly: ignore [bad-assignment]
 
         # if `reminde_date` is Gone
         if now >= (current_appt.reminde_date).strftime("%Y-%m-%dT%H:%M:%S"):
-                current_appt.sent = True
+                current_appt.sent = True # pyrefly: ignore [bad-assignment]
 
-        # we dont need overload `update` (we updated values above already)
-        # appt_query.update(
-        #     {**selectd_appt.model_dump()}, # it needs {} to work :)
-        #     synchronize_session=False
-        # )
+                
+        appt_query.update(
+            {**selectd_appt.model_dump()}, # it needs {} to work :)
+            synchronize_session=False
+        )
         
         db.commit()
         db.refresh(current_appt)

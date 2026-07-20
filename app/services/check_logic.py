@@ -1,10 +1,10 @@
 
-
 from app.services.logger import logger
-from datetime import datetime, timezone
 from app.models import Appt
 from app.db_connector import SessionLocal
 import requests as req
+from app.src.utils import generate_sms_msg, now
+from app.src.dotenv_loader import ip
 
 
 def check_next_appt(): 
@@ -15,22 +15,25 @@ def check_next_appt():
 
             closer_appt = appts.first()
 
-
             # today date
             if closer_appt is None:
                 logger.debug("No Closer Appointments ...")
                 return 
 
-            now = (datetime.now(timezone.utc)).strftime("%Y-%m-%dT%H:%M:%S")
+            
 
             print(f"next reminding in : {closer_appt.reminde_date}")
 
             if now >= (closer_appt.reminde_date).strftime("%Y-%m-%dT%H:%M:%S"):
 
                 response = send_sms(
-                        closer_appt.phone_number,   
-                        f"السلام عليكم ورحمت الله، يرجي من السيد {closer_appt.username} تذكر ان يوم غد بتاريخ {closer_appt.appt_at} موعد الحجامة، كن فالموعد", 
-                        "192.168.100.5" #TODO: Change to Owner IP
+                        closer_appt.phone_number,
+                        generate_sms_msg(
+                            username=closer_appt.username,
+                            date=closer_appt.appt_at
+                        ),
+
+                        ip #TODO: Change to Owner IP
                 )                
 
                 if response:
@@ -53,6 +56,9 @@ def send_sms(phone, message, ip):
         "phone": phone,
         "message": message
     }
-    response = req.post(gateway_url, json=payload)
-    return response.status_code == 200
+    try:
+        response = req.post(gateway_url, json=payload)
+        return response.status_code == 200
+    except Exception as _:
+        return -1
 
