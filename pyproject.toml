@@ -3,23 +3,16 @@ name = "backend"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.8"
 dependencies = [
-    "alembic>=1.18.5",
     "apscheduler>=3.11.3",
-    "fastapi-cli>=0.0.32",
-    "fastapi[standard]>=0.139.2",
+    "dotenv>=0.9.9",
+    "fastapi[standard]>=0.124.4",
     "loguru>=0.7.3",
-    "pyinstaller>=6.21.0",
+    "pydantic>=2.10.6",
     "pywebview[qt]>=6.2.1",
-    "requests>=2.34.2",
+    "requests>=2.32.4",
+    "rich>=14.3.4",
     "scalar-fastapi>=1.8.2",
     "sqlalchemy>=2.0.51",
-    "types-requests>=2.33.0.20260518",
-]
-
-[tool.pyrefly]
-project-includes = [
-    "**/*.py*",
-    "**/*.ipynb",
 ]

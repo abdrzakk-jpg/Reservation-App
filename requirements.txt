@@ -1,0 +1,8 @@
+fastapi[standard]
+rich
+loguru
+dotenv
+pydantic
+sqlalchemy
+sqlalchemy
+apscheduler

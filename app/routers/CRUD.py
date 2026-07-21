@@ -1,4 +1,4 @@
-from requests.exceptions import ConnectionError
+
 from app.src.utils import generate_sms_msg
 from app.services.check_logic import send_sms
 from app.services.logger import logger
