@@ -3,7 +3,7 @@ from fastapi.responses import FileResponse
 from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from scalar_fastapi import get_scalar_api_reference  # UI enhancement
+# from scalar_fastapi import get_scalar_api_reference  # UI enhancement
 
 from app.db_connector import engine
 from app.models import Base
@@ -28,27 +28,27 @@ app.add_middleware(
 
 
 # * ===================|Updating-Docs-UI|=================== *#
-@app.get("/docs", include_in_schema=False)
-async def scalar_docs():
-    return get_scalar_api_reference(
-        openapi_url=app.openapi_url,
-        title="API Docs",
-    )
+# @app.get("/docs", include_in_schema=False)
+# async def scalar_docs():
+#     return get_scalar_api_reference(
+#         openapi_url=app.openapi_url,
+#         title="API Docs",
+#     )
 
 
 # * ======================================================== *#
 
 
 
-FRONTEND_DIR = Path(__file__).parent / "static" / "frontend"
-app.mount(
-    "/assets",
-    StaticFiles(directory=FRONTEND_DIR / "assets"),
-    name="assets",
-)
-@app.get("/")  # return the index.html content instead RAW Json
-async def root():
-    return FileResponse(FRONTEND_DIR / "index.html")
+# FRONTEND_DIR = Path(__file__).parent / "static" / "frontend"
+# app.mount(
+#     "/assets",
+#     StaticFiles(directory=FRONTEND_DIR / "assets"),
+#     name="assets",
+# )
+# @app.get("/")  # return the index.html content instead RAW Json
+# async def root():
+#     return FileResponse(FRONTEND_DIR / "index.html")
 
 
 
