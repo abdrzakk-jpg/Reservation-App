@@ -17,3 +17,6 @@ database/
 *.continue/
 .continue/agents/*
 .continue/agents/new-config.yaml
+
+# logs
+logs/
