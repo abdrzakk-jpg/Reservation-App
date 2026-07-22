@@ -1,3 +1,4 @@
+from app.routers import SMS
 from starlette.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pathlib import Path
@@ -61,3 +62,4 @@ from app.services.setup_scheduler import setup_scheduler
 setup_scheduler()
 
 app.include_router(CRUD.router)
+app.include_router(SMS.router)

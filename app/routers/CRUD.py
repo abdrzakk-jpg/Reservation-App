@@ -63,7 +63,7 @@ async def add_appt( appt: ApptScheme, db: Session = Depends(get_db) ):
             if sms_send_response == -1: 
                 logger.exception(f"Faild to Send SMS, rollback...")
                 raise HTTPException(
-                    status_code = status.HTTP_424_FAILED_DEPENDENCY,
+                    status_code = status.HTTP_503_SERVICE_UNAVAILABLE, # error [503] is more More expressive
                     detail = "SMS-Gateaway Unreachable"
                 )
 
