@@ -1,3 +1,4 @@
+import webview
 import threading
 import time
 import socket
@@ -10,7 +11,7 @@ import webview
 def start_api():
     uvicorn.run("main:app", host="127.0.0.1", port=8000, log_level="warning")
 
-
+# start fastapi in the background
 threading.Thread(target=start_api, daemon=True).start()
 
 
@@ -29,5 +30,6 @@ webview.create_window(
     width=1200,
     height=800,
 )
+
 
 webview.start()

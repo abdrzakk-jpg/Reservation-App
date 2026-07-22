@@ -3,5 +3,5 @@ import os
 
 load_dotenv(".env")
 
-ip: str | None = os.getenv("gateaway_ip")
-check_interval_in_hours: int | None = os.getenv("check_interval_in_hours")
+ip: str = os.getenv("gateaway_ip")
+check_interval_in_hours: int = int(os.getenv("check_interval_in_hours"))

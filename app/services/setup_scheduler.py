@@ -7,6 +7,6 @@ from .check_logic import check_next_appt
 def setup_scheduler():
     scheduler = BackgroundScheduler()
     logger.info("Starting Scheduler...")    
-    scheduler.add_job(check_next_appt, trigger="interval", hour=check_interval_in_hours)
+    scheduler.add_job(check_next_appt, trigger="interval", hours=check_interval_in_hours)
     scheduler.start()
     
