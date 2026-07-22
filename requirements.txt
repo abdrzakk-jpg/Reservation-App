@@ -7,3 +7,4 @@ sqlalchemy
 sqlalchemy
 apscheduler
 scalar_fastapi
+pywebview[qt]
