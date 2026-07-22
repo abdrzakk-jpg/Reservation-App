@@ -20,3 +20,4 @@ database/
 
 # logs
 logs/
+logs/app.log
