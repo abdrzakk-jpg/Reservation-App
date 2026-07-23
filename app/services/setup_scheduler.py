@@ -10,4 +10,4 @@ def setup_scheduler():
     logger.info("Starting Scheduler...")    
     scheduler.add_job(check_next_appt, trigger="interval", hours=check_interval_in_hours)
     scheduler.start()
-    
+    scheduler.shutdown(wait=False) # force to stop
