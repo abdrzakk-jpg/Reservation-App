@@ -1,8 +1,16 @@
+from pathlib import Path
 from dotenv import load_dotenv
 import os
 
+
+
 # load .env file
-load_dotenv(".env")
+env_path = Path(__file__).cwd() / "_internal" / ".env"
+if not os.path.exists(env_path):
+    env_path = Path(__file__).cwd() / ".env"  
+
+
+load_dotenv(str(env_path))
 
 # load EnvVars
 ip: str = os.getenv("gateaway_ip")

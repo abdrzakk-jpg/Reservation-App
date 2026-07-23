@@ -4,7 +4,6 @@ loguru
 dotenv
 pydantic
 sqlalchemy
-sqlalchemy
 apscheduler
 scalar_fastapi
 pywebview[qt]

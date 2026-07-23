@@ -10,9 +10,13 @@ dependencies = [
     "fastapi[standard]>=0.124.4",
     "loguru>=0.7.3",
     "pydantic>=2.10.6",
+    "pyinstaller>=6.21.0",
     "pywebview[qt]>=6.2.1",
     "requests>=2.32.4",
     "rich>=14.3.4",
     "scalar-fastapi>=1.8.2",
     "sqlalchemy>=2.0.51",
 ]
+
+[dependency-groups]
+dev = []
