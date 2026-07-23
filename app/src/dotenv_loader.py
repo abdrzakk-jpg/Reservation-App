@@ -8,7 +8,7 @@ import os
 env_path = Path(__file__).resolve().parent.parent.parent / "_internal" / ".env"
 if not os.path.exists(env_path):
     env_path = Path(__file__).resolve().parent.parent.parent / ".env"  
-
+    
 load_dotenv(str(env_path))
 
 # load EnvVars
