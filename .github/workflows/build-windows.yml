@@ -2,7 +2,8 @@ name: Build Windows
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -10,7 +11,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Python
@@ -19,27 +20,23 @@ jobs:
           python-version: "3.8"
 
       - name: Install uv
-        run: pip install uv
+        run: |
+          pip install uv
 
-      - name: Install project dependencies
-        run: uv sync
+      - name: Install dependencies
+        run: |
+          uv sync
 
       - name: Install PyInstaller
-        run: uv pip install pyinstaller
+        run: |
+          uv pip install pyinstaller
 
-      - name: Build executable
-        run: >
-          uv run pyinstaller
-          --windowed
-          --name Appointments
-          --add-data "app;app"
-          --add-data "static;static"
-          --add-data "main.py;."
-          --add-data ".env;."
-          UI.py
+      - name: Build application
+        run: |
+          uv run pyinstaller --clean --noconfirm UI.spec
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: Appointments-Windows
-          path: dist/
+          path: dist/Appointments/**
