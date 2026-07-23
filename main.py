@@ -4,7 +4,7 @@ from fastapi.responses import FileResponse
 from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from scalar_fastapi import get_scalar_api_reference  # UI enhancement
+# from scalar_fastapi import get_scalar_api_reference  # UI enhancement
 
 from app.db_connector import engine
 from app.models import Base
