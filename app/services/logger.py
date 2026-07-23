@@ -1,6 +1,8 @@
 from loguru import logger
 import os
 
+
+# setup loggers
 def setup_logging():
     logger.remove()  # Remove default handler
 
