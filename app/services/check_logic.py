@@ -7,6 +7,8 @@ from app.src.utils import generate_sms_msg, now
 from app.src.dotenv_loader import ip
 
 
+
+# check the next appointments & timing them
 def check_next_appt(): 
     try:
         with SessionLocal() as db:

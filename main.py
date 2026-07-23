@@ -4,8 +4,6 @@ from fastapi.responses import FileResponse
 from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-# from scalar_fastapi import get_scalar_api_reference  # UI enhancement
-
 from app.db_connector import engine
 from app.models import Base
 from app.routers import CRUD
@@ -28,6 +26,7 @@ app.add_middleware(
 )
 
 
+# from scalar_fastapi import get_scalar_api_reference  # UI enhancement
 # # * ===================|Updating-Docs-UI|=================== *#
 # @app.get("/docs", include_in_schema=False)
 # async def scalar_docs():
@@ -41,19 +40,20 @@ app.add_middleware(
 
 
 
-# FRONTEND_DIR = Path(__file__).parent / "static" / "frontend"
-# app.mount(
-#     "/assets",
-#     StaticFiles(directory=FRONTEND_DIR / "assets"),
-#     name="assets",
-# )
-# @app.get("/")  # return the index.html content instead RAW Json
-# async def root():
-#     return FileResponse(FRONTEND_DIR / "index.html")
-
-
+FRONTEND_DIR = Path(__file__).parent / "static" / "frontend"
+app.mount(
+    "/assets",
+    StaticFiles(directory=FRONTEND_DIR / "assets"),
+    name="assets",
+)
 
 # serve the frontend (static folder)
+@app.get("/")  # return the index.html content instead RAW Json
+async def root():
+    return FileResponse(FRONTEND_DIR / "index.html")
+
+
+
 
 
 
@@ -61,5 +61,5 @@ app.add_middleware(
 from app.services.setup_scheduler import setup_scheduler
 setup_scheduler()
 
-app.include_router(CRUD.router)
-app.include_router(SMS.router)
+app.include_router(CRUD.router) # add crud routes
+app.include_router(SMS.router) # add SMS-check endpoint

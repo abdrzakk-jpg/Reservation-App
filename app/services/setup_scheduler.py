@@ -4,6 +4,7 @@ from app.services.logger import logger
 from apscheduler.schedulers.background import BackgroundScheduler
 from .check_logic import check_next_appt
 
+# setup scheduler
 def setup_scheduler():
     scheduler = BackgroundScheduler()
     logger.info("Starting Scheduler...")    

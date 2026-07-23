@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from pydantic import BaseModel, Field
 
 
+# Expected appointment forms
 class ApptScheme(BaseModel):
     username: str
     phone_number: str = Field(

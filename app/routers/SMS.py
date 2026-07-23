@@ -4,10 +4,12 @@ from fastapi import APIRouter, HTTPException
 from app.schemas.schemes import *
 from app.src.dotenv_loader import ip
 
+
 router = APIRouter(
     prefix='/sms', 
 )
-#* check SMS-Gateaway connection 
+
+#* check SMS-Gateaway connection endpoint
 @router.get("/gateaway-check")
 async def check() :
     gate_status = send_sms("0612345678", "Are You Alive ?", ip)

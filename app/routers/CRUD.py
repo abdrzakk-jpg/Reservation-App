@@ -17,7 +17,7 @@ router = APIRouter(
 
 
 
-#* get appointment
+#* get appointments
 @router.get("/", status_code=status.HTTP_200_OK, response_model=List[ApptResScheme])
 # @router.get("/", status_code=status.HTTP_200_OK, response_model=ApptResScheme)
 def get_appts(db: Session = Depends(get_db)):
