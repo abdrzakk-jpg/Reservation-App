@@ -1,9 +1,9 @@
 # Python-generated files
 __pycache__/
 *.py[oc]
-build/
-dist/
-wheels/
+*build/
+*dist/
+*wheels/
 *.egg-info
     
 # Virtual environments
@@ -21,3 +21,6 @@ database/
 # logs
 logs/
 logs/app.log
+
+# build tool
+build-linux.sh
