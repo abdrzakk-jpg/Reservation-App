@@ -21,8 +21,8 @@ def check_next_appt():
             if closer_appt is None:
                 logger.debug("No Closer Appointments ...")
                 return 
+ 
 
-            
 
             print(f"next reminding in : {closer_appt.reminde_date}")
 
@@ -36,7 +36,7 @@ def check_next_appt():
                         ),
 
                         ip #TODO: Change to Owner IP
-                )                
+                )
 
                 if response:
                     logger.success(f"Sent To: Dear [{closer_appt.username}] to [{closer_appt.phone_number}]")
@@ -49,7 +49,7 @@ def check_next_appt():
 
     except Exception as err:
         logger.warning(f"Error: [{err}]")
-    
+
 
 # send SMS with {message} to {number_phone}
 def send_sms(phone, message, ip):
