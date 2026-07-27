@@ -1,13 +1,16 @@
 from pathlib import Path
 from dotenv import load_dotenv
-import os
+import os, sys
 
 
 
 # load .env file
-env_path = Path(__file__).resolve().parent / "_internal" / ".env"
+if getattr(sys, "frozen", False):
+    env_path = Path(sys.executable).parent / "_internal" / ".env"
+else:
+    env_path = Path(__file__).resolve().parents[2] / ".env"
 
-if not os.path.exists(env_path): env_path = Path(__file__).resolve().parent / ".env"
+print("env_path =", env_path)
 
 load_dotenv(str(env_path))
 # load EnvVars
