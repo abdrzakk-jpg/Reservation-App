@@ -2,11 +2,9 @@
 
 import webview, sys, uvicorn, threading, time, socket
 
-gui = "qt"
 
-if sys.platform == "win32":
-    gui = "cef"
 
+gui = "cef"
 webview.start(gui=gui)
 
 def start_api():
