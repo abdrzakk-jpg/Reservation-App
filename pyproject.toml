@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
     "apscheduler==3.11.0",
+    "cefpython3==66.1 ; sys_platform == 'win32'",
     "dotenv>=0.9.9",
     "fastapi[standard]==0.124.4",
     "loguru==0.7.3",

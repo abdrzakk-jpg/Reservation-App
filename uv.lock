@@ -116,6 +116,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "apscheduler" },
+    { name = "cefpython3", marker = "sys_platform == 'win32'" },
     { name = "dotenv" },
     { name = "fastapi", extra = ["standard"] },
     { name = "loguru" },
@@ -136,6 +137,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "apscheduler", specifier = "==3.11.0" },
+    { name = "cefpython3", marker = "sys_platform == 'win32'", specifier = "==66.1" },
     { name = "dotenv", specifier = ">=0.9.9" },
     { name = "fastapi", extras = ["standard"], specifier = "==0.124.4" },
     { name = "loguru", specifier = "==0.7.3" },
@@ -174,6 +176,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/7a/71/cca6167c06d00c81375fd668719df245864076d284f7cb46a694cbeb5454/bottle-0.13.4.tar.gz", hash = "sha256:787e78327e12b227938de02248333d788cfe45987edca735f8f88e03472c3f47", size = 98717, upload-time = "2025-06-15T10:08:59.439Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/83/f6/b55ec74cfe68c6584163faa311503c20b0da4c09883a41e8e00d6726c954/bottle-0.13.4-py2.py3-none-any.whl", hash = "sha256:045684fbd2764eac9cdeb824861d1551d113e8b683d8d26e296898d3dd99a12e", size = 103807, upload-time = "2025-06-15T10:08:57.691Z" },
+]
+
+[[package]]
+name = "cefpython3"
+version = "66.1"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a2/42/a9f3fc0a8f8220789bd64a2f48bbafa23581811922069793750f8366c3bd/cefpython3-66.1-py2.py3-none-win32.whl", hash = "sha256:3cf0dc13b4e9aa1c7f028e7f1bfe4e7fca6e677f18574f4ef9346f5d48853f51", size = 65172649, upload-time = "2021-02-16T20:11:57.441Z" },
+    { url = "https://files.pythonhosted.org/packages/3b/d4/f313221a999e4d295cc8fcb15fc4ac9c98f6759e50735d6f6ce84fd3e98a/cefpython3-66.1-py2.py3-none-win_amd64.whl", hash = "sha256:afe1bcde78cbd3790370f4a51cbca37de8bff761de0452f8b8a3b22971bed82a", size = 68996832, upload-time = "2021-02-16T20:12:06.111Z" },
 ]
 
 [[package]]
