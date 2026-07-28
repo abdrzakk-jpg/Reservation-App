@@ -27,10 +27,6 @@ jobs:
         run: |
           uv sync
 
-      - name: Install PyInstaller
-        run: |
-          uv pip install pyinstaller
-
       - name: Build application
         run: |
           uv run pyinstaller --clean --noconfirm UI.spec
@@ -40,3 +36,7 @@ jobs:
         with:
           name: Appointments-Windows
           path: dist/Appointments/**
+
+      - name: Self Test
+        run: |
+          dist/Appointments/Appointments.exe --self-test

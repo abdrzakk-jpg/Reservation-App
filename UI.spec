@@ -1,6 +1,12 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 from PyInstaller.utils.hooks import collect_all, collect_submodules
+import sys
+
+# add --test argument
+if "--test" in sys.argv:
+    print("OK")
+    sys.exit(0)
 
 packages = [
     "webview",
