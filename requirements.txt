@@ -1,9 +1,14 @@
-fastapi[standard]
-rich
-loguru
-dotenv
-pydantic
-sqlalchemy
-apscheduler
-scalar_fastapi
-pywebview[qt]
+fastapi[standard]==0.124.4
+rich==13.9.4
+loguru==0.7.3
+python-dotenv==1.0.1
+pydantic==2.10.6
+sqlalchemy==2.0.43
+apscheduler==3.11.0
+scalar-fastapi==1.4.3
+pywebview[qt]==5.4
+
+# Build tools
+pyinstaller==6.16.0
+setuptools==69.5.1
+wheel==0.45.1

@@ -5,17 +5,20 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
-    "apscheduler>=3.11.3",
+    "apscheduler==3.11.0",
     "dotenv>=0.9.9",
-    "fastapi[standard]>=0.124.4",
-    "loguru>=0.7.3",
-    "pydantic>=2.10.6",
-    "pyinstaller>=6.21.0",
-    "pywebview[qt]>=6.2.1",
+    "fastapi[standard]==0.124.4",
+    "loguru==0.7.3",
+    "pydantic==2.10.6",
+    "pyinstaller==6.16.0",
+    "python-dotenv==1.0.1",
+    "pywebview[qt]==5.4",
     "requests>=2.32.4",
-    "rich>=14.3.4",
-    "scalar-fastapi>=1.8.2",
-    "sqlalchemy>=2.0.51",
+    "rich==13.9.4",
+    "scalar-fastapi==1.4.3",
+    "setuptools==69.5.1",
+    "sqlalchemy==2.0.43",
+    "wheel==0.45.1",
 ]
 
 [dependency-groups]
