@@ -20,6 +20,7 @@ packages = [
     "requests",
     "loguru",
     "dotenv",
+    "cefpython3"
 ]
 
 datas = [
