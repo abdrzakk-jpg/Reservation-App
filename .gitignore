@@ -24,3 +24,6 @@ logs/app.log
 
 # build tool
 build-linux.sh
+
+# uv folders
+src/*
