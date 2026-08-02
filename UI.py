@@ -1,13 +1,9 @@
 
 
-import webview, sys, uvicorn, threading, time, socket
+import webview, uvicorn, threading, time, socket
 
-gui = "qt"
 
-if sys.platform == "win32":
-    gui = "cef"
 
-webview.start(gui=gui)
 
 def start_api():
     uvicorn.run("main:app", host="127.0.0.1", port=8000, log_level="warning")
@@ -32,5 +28,5 @@ webview.create_window(
     height=800,
 )
 
-
-webview.start()
+gui = "cef"
+webview.start(gui=gui)

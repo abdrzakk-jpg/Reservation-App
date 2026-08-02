@@ -20,8 +20,6 @@ packages = [
     "requests",
     "loguru",
     "dotenv",
-    "pywebview[qt]",
-    "rich"
 ]
 
 datas = [
