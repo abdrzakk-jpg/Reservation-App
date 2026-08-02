@@ -41,4 +41,4 @@ jobs:
 
       - name: Self Test
         run: |
-          dist/Appointments/Appointments.exe --self-test
+          dist/Appointments/Appointments.exe --test
