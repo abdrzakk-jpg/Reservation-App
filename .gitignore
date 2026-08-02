@@ -26,4 +26,3 @@ logs/app.log
 build-linux.sh
 
 # uv folders
-src/*
