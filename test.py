@@ -5,7 +5,6 @@ import requests as req
 from app.src.dotenv_loader import ip
 
 
-
 def send_sms(phone, message, ip):
     gateway_url = f"http://{ip}:8080/send-sms"
     payload = {
