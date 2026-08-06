@@ -24,6 +24,12 @@ dependencies = [
     "wheel==0.45.1",
 ]
 
+[tool.pyrefly]
+project-includes = [
+    "**/*.py*",
+    "**/*.ipynb",
+]
+
 [project.scripts]
 backend = "backend:main"
 
